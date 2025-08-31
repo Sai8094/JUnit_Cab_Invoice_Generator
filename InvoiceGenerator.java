@@ -25,4 +25,19 @@ public class InvoiceGenerator {
 		return total;
 	}
 
+	// Enhanced Invoice Summary
+	public InvoiceSummary calculateFareSummary(Ride[] rides) {
+		if (rides == null) {
+			throw new IllegalArgumentException("Rides cannot be null");
+		}
+		if (rides.length == 0) {
+			return new InvoiceSummary(0, 0.0);
+		}
+		double totalFare = 0;
+		for (Ride ride : rides) {
+			totalFare += calculateFare(ride.distance, ride.time);
+		}
+		return new InvoiceSummary(rides.length, totalFare);
+	}
+
 }
