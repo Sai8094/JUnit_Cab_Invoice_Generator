@@ -5,14 +5,15 @@ public class InvoiceGenerator {
 	int cost = 10;
 	int minute = 1;
 	double minimumPrice = 5.0;
-	// add field:
+
 	RideRepository repo = new RideRepository();
 
-	// add methods:
+	// Adding rides
 	public void addRides(String userId, Ride[] rides) {
 		repo.addRides(userId, rides);
 	}
 
+	// Invoice Summary
 	public InvoiceSummary getInvoiceSummary(String userId) {
 		if (userId == null) {
 			throw new IllegalArgumentException("user id cannot be null");
@@ -21,21 +22,28 @@ public class InvoiceGenerator {
 	}
 
 	// Calaculate_Fare for single ride
-	public double calculateFare(double distance, int time) {
-		if (distance < 0 || time < 0)
+	public double calculateFare(double distance, int time, RideCategory category) {
+		if(distance < 0 || time < 0) {
 			throw new IllegalArgumentException("Distance and Time cannot be negative");
-		double fare = distance * cost + time * minute;
-		return Math.max(fare, minimumPrice);
+		}
+		if(category == null) {
+			throw new IllegalArgumentException("Category cannot be null");
+		}
+		double fare = distance * category.cost + time * category.minutes;
+		return Math.max(fare, category.minimumPrice);
 	}
 
-	// Calaculate_Fare for Multiple_Rides
+	public double calculateFare(double distance, int time) {
+		return calculateFare(distance, time, RideCategory.NORMAL);
+	}
+
 	public double calculateFare(Ride[] rides) {
+		double total = 0.0;
 		if (rides == null) {
 			throw new IllegalArgumentException("Rides cannot be null");
 		}
-		double total = 0.0;
-		for (Ride ride : rides)
-			total += calculateFare(ride.distance, ride.time);
+		for (Ride r : rides)
+			total += calculateFare(r.distance, r.time, r.category);
 		return total;
 	}
 
