@@ -5,6 +5,20 @@ public class InvoiceGenerator {
 	int cost = 10;
 	int minute = 1;
 	double minimumPrice = 5.0;
+	// add field:
+	RideRepository repo = new RideRepository();
+
+	// add methods:
+	public void addRides(String userId, Ride[] rides) {
+		repo.addRides(userId, rides);
+	}
+
+	public InvoiceSummary getInvoiceSummary(String userId) {
+		if (userId == null) {
+			throw new IllegalArgumentException("user id cannot be null");
+		}
+		return calculateFareSummary(repo.getRides(userId));
+	}
 
 	// Calaculate_Fare for single ride
 	public double calculateFare(double distance, int time) {
